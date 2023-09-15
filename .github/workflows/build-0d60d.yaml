@@ -1,0 +1,29 @@
+name: "Build"
+
+on:
+  workflow_dispatch:
+      
+jobs:
+  build:
+    name: Build 
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Restore
+      run: dotnet restore -r linux-x64
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore -r linux-x64 --self-contained true -bl
+
+    - name: Upload binlog
+      uses: actions/upload-artifact@v2
+      with:
+        name: binlog
+        path: msbuild.binlog
